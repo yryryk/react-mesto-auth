@@ -8,6 +8,10 @@ import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
 import {CurrentUserContext} from '../contexts/CurrentUserContext';
+import {Route, Routes} from 'react-router-dom';
+import ProtectedRouteElement from "./ProtectedRoute";
+import Register from './Register';
+import Login from './Login';
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
@@ -118,25 +122,39 @@ function App() {
     };
   },[]);
 
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  const handleLogin = () => {
+    setLoggedIn(true);
+  }
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
-      <div className="App">
 
-        <Header />
-        <Main handlers={{onEditProfile: handleEditProfileClick, onAddPlace: handleAddPlaceClick, onEditAvatar: handleEditAvatarClick, onCardClick: handleCardClick, onCardLike: handleCardLike, onCardDelete: handleCardDelete}}  cards={cards} />
-        <Footer />
+        <Routes>
+          <Route path="/" element={<ProtectedRouteElement element={
+            <>
+              <Header />
+              <Main handlers={{
+                onEditProfile: handleEditProfileClick,
+                onAddPlace: handleAddPlaceClick,
+                onEditAvatar: handleEditAvatarClick,
+                onCardClick: handleCardClick,
+                onCardLike: handleCardLike,
+                onCardDelete: handleCardDelete}}  cards={cards} />
+              <Footer />
+              <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser} />
+              <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onAddPlace={handleAddPlace} />
+              <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar} />
+              <ImagePopup card={selectedCard} onClose={closeAllPopups} />
+            </>}
+            loggedIn={loggedIn}/>}
+          />
+          <Route path="/signin" element={<Login handleLogin={handleLogin} />} />
+          <Route path="/signup" element={<Register />} />
+        </Routes>
 
-        <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser} />
-
-        <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onAddPlace={handleAddPlace} />
-
-        <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar} />
-
-        <ImagePopup card={selectedCard} onClose={closeAllPopups} />
-        
-      </div>
     </CurrentUserContext.Provider>
-
   );
 }
 
