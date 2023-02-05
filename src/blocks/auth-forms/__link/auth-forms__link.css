@@ -1,0 +1,10 @@
+.auth-forms__link {
+  text-decoration: none;
+  display: block;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+  text-align: center;
+  color: #FFFFFF;
+  margin-top: 20px;
+}
