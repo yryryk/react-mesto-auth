@@ -25,7 +25,7 @@ function App() {
     name: ""
   });
   const [cards, setCards] = useState([]);
-  // const [email, setEmail] = useState("");
+  const [email, setEmail] = useState("ghjllxdsjhjghg.,mnmbnvm,n.m/n/.,n,bk");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -130,8 +130,8 @@ function App() {
   const [loggedIn, setLoggedIn] = useState(false);
 
   const handleLogin = () => {
-    setIsInfoTooltipPopupOpen(true);
     setLoggedIn(true);
+    setIsInfoTooltipPopupOpen(true);
     navigate("/");
     console.log(loggedIn)
   }
@@ -148,8 +148,10 @@ function App() {
         <Route path="/" element={<Header />}>
 
           <Route index element={
+
             <Link to="/" className="auth-forms__link">
-              Выйти
+              <p className="auth-forms__email">{email}</p>
+              <p className="auth-forms__email">Выйти</p>
             </Link>
           } />
           <Route path="signin" element={

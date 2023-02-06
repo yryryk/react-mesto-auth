@@ -46,6 +46,9 @@
 @import url(./blocks/auth-forms/__submit-button/auth-forms__submit-button.css);
 @import url(./blocks/auth-forms/__link/auth-forms__link.css);
 @import url(./blocks/header/__user-state/header__user-state.css);
+@import url(./blocks/popup/__auth-image/popup__auth-image.css);
+@import url(./blocks/popup/__auth-message/popup__auth-message.css);
+@import url(./blocks/auth-forms/__email/auth-forms__email.css);
 
 @import url(./blocks/popup/_open/popup_open.css);
 @import url(./blocks/elements/__like-button/_active/elements__like-button_active.css);
@@ -57,3 +60,5 @@
 @import url(./blocks/popup/__input-error/_active/popup__input-error_active.css);
 @import url(./blocks/popup/__submit-button/_inactive/popup__submit-button_inactive.css);
 @import url(./blocks/input/_text-color/input_text-color_white.css);
+@import url(./blocks/popup/__auth-image/_type/popup__auth-image_type_yep.css);
+@import url(./blocks/popup/__auth-image/_type/popup__auth-image_type_nope.css);
