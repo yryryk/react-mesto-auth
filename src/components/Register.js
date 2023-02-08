@@ -1,7 +1,7 @@
 import { useForm } from '../hooks/useForm';
 import {Link} from 'react-router-dom';
 
-const Register = ({handleRegister}) => {
+const Register = ({onRegister}) => {
   const {values, handleChange, setValues} = useForm({
     email: '',
     password: '',
@@ -9,7 +9,7 @@ const Register = ({handleRegister}) => {
 
   function handleSubmit(e) {
     e.preventDefault();
-    handleRegister(values);
+    onRegister(values);
     setValues({
       email: '',
       password: '',

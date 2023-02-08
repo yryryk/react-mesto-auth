@@ -1,6 +1,6 @@
 import { useForm } from '../hooks/useForm';
 
-const Login = ({handleLogin}) => {
+const Login = ({onLogin}) => {
   const {values, handleChange, setValues} = useForm({
     email: '',
     password: '',
@@ -8,7 +8,7 @@ const Login = ({handleLogin}) => {
 
   function handleSubmit(e) {
     e.preventDefault();
-    handleLogin(values);
+    onLogin(values);
     setValues({
       email: '',
       password: '',

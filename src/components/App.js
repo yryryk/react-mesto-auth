@@ -21,14 +21,13 @@ function App() {
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
   const [isInfoTooltipPopupOpen, setIsInfoTooltipPopupOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState({});
-  const [currentUser, setCurrentUser] = useState({
-  });
+  const [currentUser, setCurrentUser] = useState({});
   const [cards, setCards] = useState([]);
   const [loggedIn, setLoggedIn] = useState(false);
-  const navigate = useNavigate();
   const [successAuth, setSuccessAuth] = useState(false);
   const [messageAuth, setMessageAuth] = useState('');
   const [waitingLoad, setWaitingLoad] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const jwt = localStorage.getItem("JWT");
@@ -177,19 +176,19 @@ function App() {
     });
   }
 
-  function handleQuit() {
+  function onSignOut() {
     localStorage.removeItem('JWT');
     navigate("/signin");
   }
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
-      
+
       <Routes>
         <Route path="/" element={<Header />}>
 
           <Route index element={
-            <Link to="/signin" className="auth-forms__link" onClick={handleQuit}>
+            <Link to="/signin" className="auth-forms__link" onClick={onSignOut}>
               <p className="auth-forms__email">{currentUser.email}</p>
               <p className="auth-forms__email">Выйти</p>
             </Link>
@@ -223,8 +222,8 @@ function App() {
           cards={cards}
           />}
         />
-        <Route path="/signin" element={<Login handleLogin={handleLogin} />} />
-        <Route path="/signup" element={<Register handleRegister={handleRegister} />} />
+        <Route path="/signin" element={<Login onLogin={handleLogin} />} />
+        <Route path="/signup" element={<Register onRegister={handleRegister} />} />
         <Route path="*" element={loggedIn ? <Navigate to="/" /> : <Navigate to="/signin" />}/>
       </Routes>
       <Footer />
