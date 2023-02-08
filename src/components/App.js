@@ -179,13 +179,13 @@ function App() {
               onCardLike: handleCardLike,
               onCardDelete: handleCardDelete}}
             cards={cards} />
-            <Footer />
           </>} />}
         />
         <Route path="/signin" element={<Login handleLogin={handleLogin} />} />
         <Route path="/signup" element={<Register handleRegister={handleRegister} />} />
         <Route path="*" element={loggedIn ? <Navigate to="/" /> : <Navigate to="/signin" />}/>
       </Routes>
+      <Footer />
 
       <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser} />
       <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onAddPlace={handleAddPlace} />
