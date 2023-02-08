@@ -9,7 +9,7 @@ const Register = ({handleRegister}) => {
 
   function handleSubmit(e) {
     e.preventDefault();
-    handleRegister();
+    handleRegister(values);
     setValues({
       email: '',
       password: '',

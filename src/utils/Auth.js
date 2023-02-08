@@ -12,6 +12,7 @@ class Auth {
   }
 
   signUpUser(inputValues) {
+    console.log(inputValues);
     return fetch(`${this._baseUrl}/signup`, {
       method: 'POST',
       headers: this._headers,
@@ -49,7 +50,7 @@ class Auth {
 }
 
 const auth = new Auth({
-  baseUrl: 'https://auth.nomoreparties.co/',
+  baseUrl: 'https://auth.nomoreparties.co',
   headers: {
     'Content-Type': 'application/json',
   }

@@ -8,7 +8,7 @@ const Login = ({handleLogin}) => {
 
   function handleSubmit(e) {
     e.preventDefault();
-    handleLogin();
+    handleLogin(values);
     setValues({
       email: '',
       password: '',

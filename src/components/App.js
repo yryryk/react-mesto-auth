@@ -13,6 +13,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import Register from './Register';
 import Login from './Login';
 import InfoTooltip from './InfoTooltip';
+import auth from '../utils/Auth';
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
@@ -25,8 +26,9 @@ function App() {
     name: ""
   });
   const [cards, setCards] = useState([]);
-  const [email, setEmail] = useState("ghjllxdsjhjghg.,mnmbnvm,n.m/n/.,n,bk");
   const navigate = useNavigate();
+  const [success, setSuccess] = useState(false);
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
     Promise.all([api.getUserInfo(), api.getInitialCards()])
@@ -129,16 +131,36 @@ function App() {
 
   const [loggedIn, setLoggedIn] = useState(false);
 
-  const handleLogin = () => {
-    setLoggedIn(true);
-    setIsInfoTooltipPopupOpen(true);
-    navigate("/");
-    console.log(loggedIn)
+  const handleLogin = (inputValues) => {
+    auth.signInUser(inputValues)
+    .then((result) => {
+      console.log(result);
+      setCurrentUser({...currentUser, 'email': inputValues.email});
+      setLoggedIn(true);
+      navigate("/");
+    })
+    .catch((err) => {
+      setSuccess(false);
+      setMessage(err);
+      setIsInfoTooltipPopupOpen(true);
+      console.log(err);
+    });
   }
-  const handleRegister = () => {
-    setIsInfoTooltipPopupOpen(true);
-    setLoggedIn(true);
-    console.log(loggedIn)
+
+  const handleRegister = (inputValues) => {
+    auth.signUpUser(inputValues)
+    .then((result) => {
+      console.log(result);
+      setSuccess(true);
+      setIsInfoTooltipPopupOpen(true);
+      navigate("/signin");
+    })
+    .catch((err) => {
+      setSuccess(false);
+      setMessage(err);
+      setIsInfoTooltipPopupOpen(true);
+      console.log(err);
+    });
   }
 
   return (
@@ -148,9 +170,8 @@ function App() {
         <Route path="/" element={<Header />}>
 
           <Route index element={
-
             <Link to="/" className="auth-forms__link">
-              <p className="auth-forms__email">{email}</p>
+              <p className="auth-forms__email">{currentUser.email}</p>
               <p className="auth-forms__email">Выйти</p>
             </Link>
           } />
@@ -169,17 +190,19 @@ function App() {
       </Routes>
 
       <Routes>
-        <Route path="/" element={<ProtectedRoute loggedIn={loggedIn} component={
-          () => <>
-            <Main handlers={{
-              onEditProfile: handleEditProfileClick,
-              onAddPlace: handleAddPlaceClick,
-              onEditAvatar: handleEditAvatarClick,
-              onCardClick: handleCardClick,
-              onCardLike: handleCardLike,
-              onCardDelete: handleCardDelete}}
-            cards={cards} />
-          </>} />}
+        <Route path="/" element={<ProtectedRoute
+          component={Main}
+          loggedIn={loggedIn}
+          handlers={{
+            onEditProfile: handleEditProfileClick,
+            onAddPlace: handleAddPlaceClick,
+            onEditAvatar: handleEditAvatarClick,
+            onCardClick: handleCardClick,
+            onCardLike: handleCardLike,
+            onCardDelete: handleCardDelete
+          }}
+          cards={cards}
+          />}
         />
         <Route path="/signin" element={<Login handleLogin={handleLogin} />} />
         <Route path="/signup" element={<Register handleRegister={handleRegister} />} />
@@ -191,7 +214,7 @@ function App() {
       <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onAddPlace={handleAddPlace} />
       <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar} />
       <ImagePopup card={selectedCard} onClose={closeAllPopups} />
-      <InfoTooltip isOpen={isInfoTooltipPopupOpen} onClose={closeAllPopups} message={loggedIn} success={loggedIn} />
+      <InfoTooltip isOpen={isInfoTooltipPopupOpen} onClose={closeAllPopups} message={message} success={success} />
 
     </CurrentUserContext.Provider>
   );
