@@ -21,15 +21,15 @@ const Register = ({handleRegister}) => {
       <h2 className="auth-forms__title">Регистрация</h2>
       <form className="auth-forms__form" name="login" onSubmit={handleSubmit}>
         <label className="auth-forms__field">
-          <input id="email-input" type="email" name="email" className="input input_text-color_white" placeholder="Email" onChange={handleChange} value={values.email} minLength="2" maxLength="40" required />
+          <input id="email-input" type="email" name="email" className="input input_text-color_white" placeholder="Email" onChange={handleChange} value={values.email||''} minLength="2" maxLength="40" required />
         </label>
         <label className="auth-forms__field">
-          <input id="password-input" type="text" name="password" className="input input_text-color_white" placeholder="Пароль" onChange={handleChange} value={values.password} minLength="2" maxLength="200" required />
+          <input id="password-input" type="text" name="password" className="input input_text-color_white" placeholder="Пароль" onChange={handleChange} value={values.password||''} minLength="2" maxLength="200" required />
         </label>
         <button aria-label="кнопка сохранить" type="submit" className="auth-forms__submit-button">Зарегистрироваться</button>
       </form>
       <Link to="/signin" className="auth-forms__link">
-        Ещё не зарегистрированы? Войти
+        Уже зарегистрированы? Войти
       </Link>
     </div>
   );

@@ -22,24 +22,42 @@ function App() {
   const [isInfoTooltipPopupOpen, setIsInfoTooltipPopupOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState({});
   const [currentUser, setCurrentUser] = useState({
-    about: "",
-    name: ""
   });
   const [cards, setCards] = useState([]);
+  const [loggedIn, setLoggedIn] = useState(false);
   const navigate = useNavigate();
-  const [success, setSuccess] = useState(false);
-  const [message, setMessage] = useState('');
+  const [successAuth, setSuccessAuth] = useState(false);
+  const [messageAuth, setMessageAuth] = useState('');
+  const [waitingLoad, setWaitingLoad] = useState(true);
 
   useEffect(() => {
-    Promise.all([api.getUserInfo(), api.getInitialCards()])
-    .then(([resultInfo, resultCards]) => {
-      setCurrentUser(resultInfo);
-      setCards(resultCards);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-  },[]);
+    const jwt = localStorage.getItem("JWT");
+    if (jwt) {
+      auth.checkToken(jwt)
+      .then((result) => {
+        setLoggedIn(true);
+        navigate("/");
+        return result
+      })
+      .then((result) => {
+        Promise.all([api.getUserInfo(), api.getInitialCards()])
+        .then(([resultInfo, resultCards]) => {
+          setCurrentUser({email: result.data.email, ...resultInfo});
+          setCards(resultCards);
+        })
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(()=>{
+        setWaitingLoad(false);
+      })
+
+    }else{
+      setWaitingLoad(false);
+    }
+
+  },[navigate]);
 
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);
@@ -129,19 +147,16 @@ function App() {
     };
   },[]);
 
-  const [loggedIn, setLoggedIn] = useState(false);
-
   const handleLogin = (inputValues) => {
     auth.signInUser(inputValues)
     .then((result) => {
-      console.log(result);
-      setCurrentUser({...currentUser, 'email': inputValues.email});
+      localStorage.setItem('JWT', result.token);
       setLoggedIn(true);
       navigate("/");
     })
     .catch((err) => {
-      setSuccess(false);
-      setMessage(err);
+      setSuccessAuth(false);
+      setMessageAuth(err);
       setIsInfoTooltipPopupOpen(true);
       console.log(err);
     });
@@ -149,28 +164,32 @@ function App() {
 
   const handleRegister = (inputValues) => {
     auth.signUpUser(inputValues)
-    .then((result) => {
-      console.log(result);
-      setSuccess(true);
+    .then(() => {
+      setSuccessAuth(true);
       setIsInfoTooltipPopupOpen(true);
       navigate("/signin");
     })
     .catch((err) => {
-      setSuccess(false);
-      setMessage(err);
+      setSuccessAuth(false);
+      setMessageAuth(err);
       setIsInfoTooltipPopupOpen(true);
       console.log(err);
     });
   }
 
+  function handleQuit() {
+    localStorage.removeItem('JWT');
+    navigate("/signin");
+  }
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
-
+      
       <Routes>
         <Route path="/" element={<Header />}>
 
           <Route index element={
-            <Link to="/" className="auth-forms__link">
+            <Link to="/signin" className="auth-forms__link" onClick={handleQuit}>
               <p className="auth-forms__email">{currentUser.email}</p>
               <p className="auth-forms__email">Выйти</p>
             </Link>
@@ -190,7 +209,7 @@ function App() {
       </Routes>
 
       <Routes>
-        <Route path="/" element={<ProtectedRoute
+        <Route path="/" element={!waitingLoad&&<ProtectedRoute
           component={Main}
           loggedIn={loggedIn}
           handlers={{
@@ -214,7 +233,7 @@ function App() {
       <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onAddPlace={handleAddPlace} />
       <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar} />
       <ImagePopup card={selectedCard} onClose={closeAllPopups} />
-      <InfoTooltip isOpen={isInfoTooltipPopupOpen} onClose={closeAllPopups} message={message} success={success} />
+      <InfoTooltip isOpen={isInfoTooltipPopupOpen} onClose={closeAllPopups} message={messageAuth} success={successAuth} />
 
     </CurrentUserContext.Provider>
   );
