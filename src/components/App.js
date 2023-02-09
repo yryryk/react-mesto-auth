@@ -24,8 +24,10 @@ function App() {
   const [currentUser, setCurrentUser] = useState({});
   const [cards, setCards] = useState([]);
   const [loggedIn, setLoggedIn] = useState(false);
-  const [successAuth, setSuccessAuth] = useState(false);
-  const [messageAuth, setMessageAuth] = useState('');
+  const [successAuth, setSuccessAuth] = useState({
+    message: '',
+    selector: '',
+  });
   const [waitingLoad, setWaitingLoad] = useState(true);
   const navigate = useNavigate();
 
@@ -43,6 +45,9 @@ function App() {
         .then(([resultInfo, resultCards]) => {
           setCurrentUser({email: result.data.email, ...resultInfo});
           setCards(resultCards);
+        })
+        .catch((err) => {
+          console.log(err);
         })
       })
       .catch((err) => {
@@ -154,8 +159,10 @@ function App() {
       navigate("/");
     })
     .catch((err) => {
-      setSuccessAuth(false);
-      setMessageAuth(err);
+      setSuccessAuth({
+        message: `Что-то пошло не так! Попробуйте ещё раз. ${err}`,
+        selector: 'popup__auth-image_type_nope',
+      });
       setIsInfoTooltipPopupOpen(true);
       console.log(err);
     });
@@ -164,13 +171,18 @@ function App() {
   const handleRegister = (inputValues) => {
     auth.signUpUser(inputValues)
     .then(() => {
-      setSuccessAuth(true);
+      setSuccessAuth({
+        message: 'Вы успешно зарегистрировались!',
+        selector: 'popup__auth-image_type_yep',
+      });
       setIsInfoTooltipPopupOpen(true);
       navigate("/signin");
     })
     .catch((err) => {
-      setSuccessAuth(false);
-      setMessageAuth(err);
+      setSuccessAuth({
+        message: `Что-то пошло не так! Попробуйте ещё раз. ${err}`,
+        selector: 'popup__auth-image_type_nope',
+      });
       setIsInfoTooltipPopupOpen(true);
       console.log(err);
     });
@@ -232,7 +244,7 @@ function App() {
       <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onAddPlace={handleAddPlace} />
       <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar} />
       <ImagePopup card={selectedCard} onClose={closeAllPopups} />
-      <InfoTooltip isOpen={isInfoTooltipPopupOpen} onClose={closeAllPopups} message={messageAuth} success={successAuth} />
+      <InfoTooltip isOpen={isInfoTooltipPopupOpen} onClose={closeAllPopups} success={successAuth} />
 
     </CurrentUserContext.Provider>
   );

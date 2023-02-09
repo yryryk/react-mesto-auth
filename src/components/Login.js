@@ -23,7 +23,7 @@ const Login = ({onLogin}) => {
           <input id="email-input" type="email" name="email" className="input input_text-color_white" placeholder="Email" onChange={handleChange} value={values.email||''} minLength="2" maxLength="40" required />
         </label>
         <label className="auth-forms__field">
-          <input id="password-input" type="text" name="password" className="input input_text-color_white" placeholder="Пароль" onChange={handleChange} value={values.password||''} minLength="2" maxLength="200" required />
+          <input id="password-input" type="password" name="password" className="input input_text-color_white" placeholder="Пароль" onChange={handleChange} value={values.password||''} minLength="2" maxLength="200" required />
         </label>
         <button aria-label="кнопка сохранить" type="submit" className="auth-forms__submit-button">Войти</button>
       </form>
