@@ -46,11 +46,12 @@ class Auth {
     })
     .then(this._checkExecution);
   }
-
 }
 
 const auth = new Auth({
-  baseUrl: 'https://auth.nomoreparties.co',
+  baseUrl: 'https://api.mesto.tovchennikov.nomoredomains.work',
+  // baseUrl: 'https://mesto.nomoreparties.co/v1/cohort-54',
+  // baseUrl:' http://localhost:3001',
   headers: {
     'Content-Type': 'application/json',
   }

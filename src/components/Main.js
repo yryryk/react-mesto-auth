@@ -21,9 +21,9 @@ function Main(props) {
       </section>
 
       <section className="elements" aria-label="Секция с картинками">
-        {props.cards.map((card) => (
+        {props.cards[0]&&props.cards.map((card) => (
           <Card card ={card} onCardClick={onCardClick} onCardLike={onCardLike} onCardDelete={onCardDelete} key={card._id} />
-        ))}
+        )).reverse()}
       </section>
     </main>
   );

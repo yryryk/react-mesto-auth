@@ -21,7 +21,12 @@ function App() {
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
   const [isInfoTooltipPopupOpen, setIsInfoTooltipPopupOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState({});
-  const [currentUser, setCurrentUser] = useState({});
+  const [currentUser, setCurrentUser] = useState({
+    email: 'Загружаем',
+    avatar: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
+    name: 'Скоро будет',
+    about: 'Ну скоро'
+  });
   const [cards, setCards] = useState([]);
   const [loggedIn, setLoggedIn] = useState(false);
   const [successAuth, setSuccessAuth] = useState({
@@ -36,6 +41,7 @@ function App() {
     if (jwt) {
       auth.checkToken(jwt)
       .then((result) => {
+        api.setToken(jwt);
         setLoggedIn(true);
         navigate("/");
         return result
@@ -43,8 +49,8 @@ function App() {
       .then((result) => {
         Promise.all([api.getUserInfo(), api.getInitialCards()])
         .then(([resultInfo, resultCards]) => {
-          setCurrentUser({email: result.data.email, ...resultInfo});
-          setCards(resultCards);
+          setCurrentUser(resultInfo.data);
+          setCards(resultCards.data);
         })
         .catch((err) => {
           console.log(err);
@@ -88,7 +94,7 @@ function App() {
     const isLiked = card.likes.some(i => i._id === currentUser._id);
 
     api.changeLikeCardStatus(card._id, isLiked).then((newCard) => {
-      setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
+      setCards((state) => state.map((c) => c._id === card._id ? newCard.data : c));
     })
     .catch((err) => {
       console.log(err);
@@ -107,7 +113,7 @@ function App() {
   function handleUpdateUser(inputValuesUser) {
     api.setUserInfo(inputValuesUser)
     .then((result) => {
-      setCurrentUser(result);
+      setCurrentUser(result.data);
       closeAllPopups();
     })
     .catch((err) => {
@@ -118,7 +124,7 @@ function App() {
   function handleUpdateAvatar(inputValuesAvatar) {
     api.setUserAvatar(inputValuesAvatar)
     .then((result) => {
-      setCurrentUser(result);
+      setCurrentUser(result.data);
       closeAllPopups();
     })
     .catch((err) => {
@@ -129,7 +135,7 @@ function App() {
   function handleAddPlace(inputValuesPlace) {
     api.setCard(inputValuesPlace)
     .then((newCard) => {
-      setCards([newCard, ...cards]);
+      setCards([...cards, newCard.data]);
       closeAllPopups();
     })
     .catch((err) => {
@@ -155,6 +161,7 @@ function App() {
     auth.signInUser(inputValues)
     .then((result) => {
       localStorage.setItem('JWT', result.token);
+      api.setToken(result.token);
       setLoggedIn(true);
       navigate("/");
     })
@@ -190,6 +197,12 @@ function App() {
 
   function onSignOut() {
     localStorage.removeItem('JWT');
+    setCurrentUser({
+      email: 'Загружаем',
+      avatar: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
+      name: 'Скоро будет',
+      about: 'Ну скоро'
+  });
     navigate("/signin");
   }
 
